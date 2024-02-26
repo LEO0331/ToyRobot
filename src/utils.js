@@ -29,12 +29,12 @@ function parseParams(command, params) {
   // Only type PLACE
   if (command === "PLACE" && !params) {
     throw new RangeError(
-      "Command failed: Please enter position X,Y and facing direction F",
+      "Command failed: Please enter valid position X,Y and facing direction F",
     );
   }
 
   // Handle X,Y,F separately with correct types
-  const args = params.split(",");
+  const args = params.trim().split(',');
 
   if (
     args.length !== 3 ||
@@ -72,8 +72,8 @@ function parseInput(input) {
   }
 
   const { cmd, args } = pipe(
-    // Handle PLACE cmd and args
-    (arr) => arr.split(" "),
+    // Handle PLACE cmd/args and trim white spaces
+    (arr) => arr.trim().split(" "),
     ([command, params]) => ({
       cmd: parseCommand(command),
       args: parseParams(command, params),

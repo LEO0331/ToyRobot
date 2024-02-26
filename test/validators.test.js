@@ -8,7 +8,7 @@ let cmdFunc = validator.cmd;
 
 describe("validator testCases", () => {
   describe("x validator", () => {
-    test("given an invalid type", () => {
+    test("given an invalid type returns false", () => {
       const expected = false;
       const xValues = [undefined, null, NaN, "string", {}, []];
       xValues.forEach((x) => {
@@ -17,7 +17,7 @@ describe("validator testCases", () => {
       });
     });
 
-    test("given an out of range value", () => {
+    test("given an out of range value returns false", () => {
       const expected = false;
       const xValues = [-1, 6];
       xValues.forEach((x) => {
@@ -26,7 +26,7 @@ describe("validator testCases", () => {
       });
     });
 
-    test("given a correct type and value", () => {
+    test("given a correct type and value returns true", () => {
       const expected = true;
       const xValues = [0, 1, 2, 3, 4, 5];
       xValues.forEach((x) => {
@@ -37,7 +37,7 @@ describe("validator testCases", () => {
   });
 
   describe("y validator", () => {
-    test("given an invalid type", () => {
+    test("given an invalid type returns false", () => {
       const expected = false;
       const yValues = [undefined, null, NaN, "string", {}, []];
       yValues.forEach((y) => {
@@ -46,7 +46,7 @@ describe("validator testCases", () => {
       });
     });
 
-    test("given an out of range value", () => {
+    test("given an out of range value returns false", () => {
       const expected = false;
       const yValues = [-1, 6];
       yValues.forEach((y) => {
@@ -55,7 +55,7 @@ describe("validator testCases", () => {
       });
     });
 
-    test("given a correct type and value", () => {
+    test("given a correct type and value returns true", () => {
       const expected = true;
       const yValues = [0, 1, 2, 3, 4, 5];
       yValues.forEach((y) => {
@@ -66,7 +66,7 @@ describe("validator testCases", () => {
   });
 
   describe("f validator", () => {
-    test("given an invalid type", () => {
+    test("given an invalid type returns false", () => {
       const expected = false;
       const fValues = [undefined, null, NaN, 123, {}, []];
       fValues.forEach((f) => {
@@ -75,13 +75,13 @@ describe("validator testCases", () => {
       });
     });
 
-    test("given a value not within the Directions list", () => {
+    test("given a value not within the Directions list returns false", () => {
       const expected = false;
       const actual = fFunc("wrongValue");
       expect(actual).toEqual(expected);
     });
 
-    test("given a correct type and value within the Directions list", () => {
+    test("given a correct type and value within the Directions list returns true", () => {
       const expected = true;
       Directions.forEach((f) => {
         const actual = fFunc(f);
@@ -91,7 +91,7 @@ describe("validator testCases", () => {
   });
 
   describe("cmd validator", () => {
-    test("given an invalid type", () => {
+    test("given an invalid type returns false", () => {
       const expected = false;
       const cmdValues = [undefined, null, NaN, 123, {}, []];
       cmdValues.forEach((cmd) => {
@@ -100,13 +100,13 @@ describe("validator testCases", () => {
       });
     });
 
-    test("given a value not within the Commands list", () => {
+    test("given a value not within the Commands list returns false", () => {
       const expected = false;
-      const actual = cmdFunc("wrongValue");
+      const actual = cmdFunc("report");
       expect(actual).toEqual(expected);
     });
 
-    test("given a correct type and value within the Commands list", () => {
+    test("given a correct type and value within the Commands list returns true", () => {
       const expected = true;
       Commands.forEach((f) => {
         const actual = cmdFunc(f);
