@@ -112,7 +112,6 @@ function handleLineInput(input, state) {
     const { cmd, args } = parseInput(input);
     return action(cmd, args, state);
   } catch (e) {
-    console.error("Command Failed", e.message);
     return state;
   }
 }

@@ -44,7 +44,7 @@ function parseParams(command, params) {
 function parseCommand(command) {
   if (!validator.cmd(command)) {
     throw new RangeError(
-      "Command failed: Please enter allowed values of commands (PLACE, MOVE, LEFT, RIGHT, REPORT",
+      "Command failed: Please enter allowed values of commands (PLACE, MOVE, LEFT, RIGHT, REPORT)",
     );
   }
 
