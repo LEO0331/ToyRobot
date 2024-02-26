@@ -10,17 +10,30 @@ const pipe = (...arr) =>
 
 // PLACE command requires params
 function parseParams(command, params) {
-  if (command !== "PLACE") {
+  if (command !== "PLACE" && !params) {
     return;
   }
 
-  if (!params) {
+  // Allow "MOVE", "LEFT", "RIGHT", "REPORT" commands with params but will trim unnecessary words
+  // if (command !== "PLACE") {
+  //   return;
+  // }
+
+  // Don't allow "MOVE", "LEFT", "RIGHT", "REPORT" commands with params 
+  if (command !== "PLACE" && params) {
+    throw new RangeError(
+      "Command failed: MOVE, LEFT, RIGHT, REPORT commands do not allow params",
+    );
+  }
+
+  // Only type PLACE
+  if (command === "PLACE" && !params) {
     throw new RangeError(
       "Command failed: Please enter position X,Y and facing direction F",
     );
   }
 
-  // Handle X,Y,F separately with correct type
+  // Handle X,Y,F separately with correct types
   const args = params.trim().split(",");
 
   if (
@@ -30,7 +43,7 @@ function parseParams(command, params) {
     !validator.f(args[2])
   ) {
     throw new RangeError(
-      "Command failed: Please enter allowed values of position X,Y and facing direction F (NORTH, EAST, SOUTH, WEST",
+      "Command failed: Please enter allowed values of position X,Y and facing direction F (NORTH, EAST, SOUTH, WEST)",
     );
   }
 
@@ -53,18 +66,14 @@ function parseCommand(command) {
 
 function parseInput(input) {
   if (typeof input !== "string") {
-    throw new TypeError(
-      "Command failed: Please enter correct type of inputs (string)",
-    );
+    throw new TypeError();
   }
 
   const { cmd, args } = pipe(
     // Handle PLACE cmd and args
     (arr) => arr.trim().split(" "),
-
     // Remove empty string
     (arr) => arr.filter((v) => v !== " "),
-
     ([command, params]) => ({
       cmd: parseCommand(command),
       args: parseParams(command, params),
@@ -77,4 +86,4 @@ function parseInput(input) {
   };
 }
 
-export { parseInput, parseParams, pipe };
+export default parseInput;
