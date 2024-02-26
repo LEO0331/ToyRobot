@@ -34,16 +34,18 @@ function parseParams(command, params) {
   }
 
   // Handle X,Y,F separately with correct types
-  const args = params.trim().split(",");
+  const args = params.split(",");
 
   if (
     args.length !== 3 ||
+    args[0] === "" ||
+    args[1] === "" ||
     !validator.x(Number(args[0])) ||
     !validator.y(Number(args[1])) ||
     !validator.f(args[2])
   ) {
     throw new RangeError(
-      "Command failed: Please enter allowed values of position X,Y and facing direction F (NORTH, EAST, SOUTH, WEST)",
+      "Command failed: Please enter allowed values (non empty numbers between 0-5) of position X,Y and facing direction F (NORTH, EAST, SOUTH, WEST)",
     );
   }
 
@@ -71,9 +73,7 @@ function parseInput(input) {
 
   const { cmd, args } = pipe(
     // Handle PLACE cmd and args
-    (arr) => arr.trim().split(" "),
-    // Remove empty string
-    (arr) => arr.filter((v) => v !== " "),
+    (arr) => arr.split(" "),
     ([command, params]) => ({
       cmd: parseCommand(command),
       args: parseParams(command, params),

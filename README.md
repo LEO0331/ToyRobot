@@ -1,6 +1,6 @@
 # Toy Robot
 
-## Instructions and Assumption
+## Instructions
 
 This is a program that simulates a Toy Robot moving on a table top. The table top is a grid of 5 units x 5 units. There are no obstructions on the table surface. The Toy Robot is free to roam around the surface of the table, but must be prevented from falling to destruction. A failed or invalid command should not stop the simulation.
 
@@ -10,10 +10,15 @@ This is a program that simulates a Toy Robot moving on a table top. The table to
 - `LEFT` will rotate the Toy Robot 90 degrees left (anti-clockwise/counter-clockwise).
 - `RIGHT` will rotate the Toy Robot 90 degrees right (clockwise).
 - `REPORT` will announce the X,Y,F of Toy Robot.
-- Assume the succeed command would strcitly follow the above perserved commands (lower case letter would result fail)
-- Every command should provide visual output that the command has either succeeded or failed.
-- Assume origin (0,0) to be the SOUTH WEST most corner.
-- Assume inputs are String type and from standard input.
+- Every command should provide visual output that the command has either succeeded or failed (display fail messages).
+
+## Assumptions
+
+- Successful commands are upper case (lower case letters would result fail).
+- Allow empty space before/after commands (e.g. `REPORT` or `PLACE 1,1,NORTH` result success).
+- Do not allow empty space between position X,Y,F (e.g. `PLACE ,,NORTH` will result fail).
+- Origin (0,0) to be the SOUTH WEST most corner.
+- Inputs are from standard input.
 - Ignore any move that would cause the robot to fall and fail (remain the same state).
 - Current Version
   - npm: 10.2.4
@@ -104,6 +109,7 @@ $ node --version
 `npm run test`
 
 #### Run prettier
+
 `npx prettier . --write`
 
 #### Paste your input followed by Enter
