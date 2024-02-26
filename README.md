@@ -16,11 +16,11 @@ This is a program that simulates a Toy Robot moving on a table top. The table to
 
 - Successful commands are upper case (lower case letters would result fail).
 - Allow empty space before/after commands (e.g. ` REPORT` or `PLACE 1,1,NORTH ` result success).
-- Do not allow empty space before `PLACE` or between position X,Y,F (e.g. `PLACE ,,NORTH` or ` PLACE 1,1,NORTH` will result fail).
+- Do not allow empty space between position X,Y,F (e.g. `PLACE ,,NORTH` will result fail).
 - Origin (0,0) to be the SOUTH WEST most corner.
 - Inputs are from standard input.
 - Ignore any move that would cause the robot to fall and fail (remain the same state).
-- Current Version
+- Current version installed
   - npm: 10.2.4
   - node: 20.11.0
   - git: 2.39.2 (Apple Git-143)
@@ -110,7 +110,7 @@ $ node --version
 
 #### Start the simulator
 
-`npm run start`
+`npm run start` or `npm start`
 
 #### Paste your input followed by Enter
 

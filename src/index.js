@@ -15,7 +15,7 @@ const readline = Readline.createInterface({
   output: process.stdout,
 });
 
-console.log("Please send instructions to the robot:");
+console.log("Please give instructions to the robot:");
 
 readline
   .on("line", (line) => {
