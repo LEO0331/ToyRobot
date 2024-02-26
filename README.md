@@ -20,6 +20,7 @@ This is a program that simulates a Toy Robot moving on a table top. The table to
 - Origin (0,0) to be the SOUTH WEST most corner.
 - Inputs are from standard input.
 - Ignore any move that would cause the robot to fall and fail (remain the same state).
+- Discard all commands in the sequence until a valid PLACE command has been executed.
 - Current version installed
   - npm: 10.2.4
   - node: 20.11.0
@@ -27,14 +28,11 @@ This is a program that simulates a Toy Robot moving on a table top. The table to
 
 ## Constraints
 
-The first valid command must be `PLACE` (Assume: discard all commands in the sequence until a valid PLACE command has been executed). After that, any sequence of commands may be issued in any order, including another PLACE command.
+The first valid command must be `PLACE`. After that, any sequence of commands may be issued in any order, including another PLACE command.
 
 ## Example Input and Output
-
 ### Example A
-
 Input:
-
 ```
 PLACE 0,0,NORTH
 MOVE
@@ -42,15 +40,11 @@ REPORT
 ```
 
 Output:
-
 ```
 0,1,NORTH
 ```
-
 ### Example B
-
 Input:
-
 ```
 PLACE 0,0,NORTH
 LEFT
@@ -58,15 +52,11 @@ REPORT
 ```
 
 Output:
-
 ```
 0,0,WEST
 ```
-
 ### Example C
-
 Input:
-
 ```
 PLACE 1,2,EAST
 MOVE
@@ -77,13 +67,10 @@ REPORT
 ```
 
 Output:
-
 ```
 3,3,NORTH
 ```
-
 ## Setup
-
 #### Make sure you have the latest git, Node.js and Npm installed on your machine
 
 ```
