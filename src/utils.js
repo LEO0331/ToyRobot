@@ -19,7 +19,7 @@ function parseParams(command, params) {
   //   return;
   // }
 
-  // Don't allow "MOVE", "LEFT", "RIGHT", "REPORT" commands with params 
+  // Don't allow "MOVE", "LEFT", "RIGHT", "REPORT" commands with params
   if (command !== "PLACE" && params) {
     throw new RangeError(
       "Command failed: MOVE, LEFT, RIGHT, REPORT commands do not allow params",
@@ -86,4 +86,4 @@ function parseInput(input) {
   };
 }
 
-export default parseInput;
+export { parseInput, parseParams };

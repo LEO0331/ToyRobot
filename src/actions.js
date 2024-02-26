@@ -1,6 +1,6 @@
 import { Directions } from "./constants";
 import validator from "./validators";
-import parseInput from "./utils";
+import { parseInput } from "./utils";
 
 // Place
 function place(args, state) {
@@ -33,7 +33,9 @@ function move(state) {
 
   // Ignore move causing the robot to fall
   if (!validator.y(newY) || !validator.x(newX)) {
-    console.log("Command failed: Robot will fall, return to the previous state, please enter a valid input")
+    console.log(
+      "Command failed: Robot will fall, return to the previous state, please enter a valid input",
+    );
     return state;
   }
 
@@ -64,7 +66,7 @@ function turn(cmd, state) {
 
   return {
     ...state,
-    f: face
+    f: face,
   };
 }
 

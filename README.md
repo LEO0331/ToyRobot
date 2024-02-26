@@ -15,10 +15,14 @@ This is a program that simulates a Toy Robot moving on a table top. The table to
 - Assume origin (0,0) to be the SOUTH WEST most corner.
 - Assume inputs are String type and from standard input.
 - Ignore any move that would cause the robot to fall and fail (remain the same state).
+- Current Version
+  - npm: 10.2.4
+  - node: 20.11.0
+  - git: 2.39.2 (Apple Git-143)
 
 ## Constraints
 
-The first valid command must be the PLACE (Assume: discard all commands in the sequence until a valid PLACE command has been executed). After that, any sequence of commands may be issued in any order, including another PLACE command.
+The first valid command must be `PLACE` (Assume: discard all commands in the sequence until a valid PLACE command has been executed). After that, any sequence of commands may be issued in any order, including another PLACE command.
 
 ## Example Input and Output
 
@@ -76,23 +80,40 @@ Output:
 ## Setup
 
 #### Make sure you have the latest git, Node.js and Npm installed on your machine
+
 ```
 $ git --version
 $ npm --version
 $ node --version
 ```
+
 #### Clone the repo from Github
-`git clone https://github.com/LEO0331/ToyRobot.git` 
+
+`git clone https://github.com/LEO0331/ToyRobot.git`
+
 #### Install dependencies with `npm install` in the ToyRobot folder
+
 `npm install`
+
 #### Start the simulator
+
 `npm run start`
+
+#### Run tests
+
+`npm run test`
+
+#### Run prettier
+`npx prettier . --write`
+
 #### Paste your input followed by Enter
+
 ```
 PLACE 0,0,NORTH -> type Enter
 MOVE -> type Enter
 REPORT -> type Enter then the result will show
 ```
-#### Exit the simulator
-`Ctrl + C` or `Cmd + C` to terminate the simulator
 
+#### Exit the simulator
+
+`Ctrl + C` or `Cmd + C` to terminate the simulator
