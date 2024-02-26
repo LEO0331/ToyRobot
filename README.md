@@ -15,8 +15,8 @@ This is a program that simulates a Toy Robot moving on a table top. The table to
 ## Assumptions
 
 - Successful commands are upper case (lower case letters would result fail).
-- Allow empty space before/after commands (e.g. `{ }REPORT` or `PLACE 1,1,NORTH{ }` result success).
-- Do not allow empty space before `PLACE` or between position X,Y,F (e.g. `PLACE ,,NORTH` or `{}PLACE 1,1,NORTH` will result fail).
+- Allow empty space before/after commands (e.g. ` REPORT` or `PLACE 1,1,NORTH ` result success).
+- Do not allow empty space before `PLACE` or between position X,Y,F (e.g. `PLACE ,,NORTH` or ` PLACE 1,1,NORTH` will result fail).
 - Origin (0,0) to be the SOUTH WEST most corner.
 - Inputs are from standard input.
 - Ignore any move that would cause the robot to fall and fail (remain the same state).
@@ -100,10 +100,6 @@ $ node --version
 
 `npm install`
 
-#### Start the simulator
-
-`npm run start`
-
 #### Run tests
 
 `npm run test`
@@ -111,6 +107,10 @@ $ node --version
 #### Run prettier
 
 `npx prettier . --write`
+
+#### Start the simulator
+
+`npm run start`
 
 #### Paste your input followed by Enter
 

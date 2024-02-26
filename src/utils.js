@@ -34,7 +34,7 @@ function parseParams(command, params) {
   }
 
   // Handle X,Y,F separately with correct types
-  const args = params.trim().split(',');
+  const args = params.trim().split(",");
 
   if (
     args.length !== 3 ||
