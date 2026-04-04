@@ -1,0 +1,145 @@
+:root {
+  --bg: #f7f6ef;
+  --panel: #fffdf5;
+  --ink: #1f2a1f;
+  --muted: #4f5d4f;
+  --accent: #1f7a4f;
+  --fail: #8c2f1c;
+  --grid: #d6d1bd;
+  --robot: #1546a6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 15% 10%, #efe8d2 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, #d9ebd7 0%, transparent 40%),
+    var(--bg);
+}
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid #d8d1b8;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.subhead {
+  margin-top: 0;
+  color: var(--muted);
+}
+
+.controls {
+  margin-top: 1rem;
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid #c8c1a8;
+  border-radius: 8px;
+  padding: 0.55rem 0.7rem;
+  background: #fff;
+}
+
+textarea {
+  margin-bottom: 0.5rem;
+}
+
+button {
+  border: 1px solid #b2b9ac;
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  background: #ecf0e4;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+button:hover {
+  background: #dfe8d2;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(42px, 1fr));
+  gap: 0.35rem;
+}
+
+.cell {
+  border: 1px solid var(--grid);
+  border-radius: 8px;
+  min-height: 54px;
+  padding: 0.2rem;
+  background: #fff;
+  position: relative;
+}
+
+.coord {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.robot {
+  position: absolute;
+  right: 0.35rem;
+  bottom: 0.2rem;
+  font-size: 1.2rem;
+  color: var(--robot);
+  font-weight: 700;
+}
+
+.status p {
+  margin: 0.3rem 0 0;
+  font-weight: 600;
+}
+
+.log {
+  margin: 0;
+  padding-left: 1.2rem;
+  max-height: 280px;
+  overflow: auto;
+}
+
+.log li {
+  margin-bottom: 0.5rem;
+}
+
+.ok {
+  color: var(--accent);
+}
+
+.bad {
+  color: var(--fail);
+}
+
+@media (max-width: 800px) {
+  .board {
+    grid-template-columns: repeat(6, minmax(34px, 1fr));
+  }
+}

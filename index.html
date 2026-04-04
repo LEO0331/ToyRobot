@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toy Robot Game</title>
+    <link rel="stylesheet" href="./web/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="panel">
+        <h1>Toy Robot</h1>
+        <p class="subhead">Web game mode with the same command rules as CLI.</p>
+
+        <div class="controls">
+          <h2>Single Command</h2>
+          <div class="row">
+            <input
+              id="command-input"
+              type="text"
+              placeholder="PLACE 0,0,NORTH"
+              aria-label="Single command input"
+            />
+            <button id="run-command" type="button">Run</button>
+          </div>
+        </div>
+
+        <div class="controls">
+          <h2>Script Mode</h2>
+          <textarea
+            id="script-input"
+            rows="8"
+            placeholder="PLACE 0,0,NORTH&#10;MOVE&#10;RIGHT&#10;REPORT"
+            aria-label="Script input"
+          ></textarea>
+          <div class="row">
+            <button id="step-script" type="button">Step</button>
+            <button id="run-script" type="button">Run All</button>
+            <button id="reset-script" type="button">Reset Script Cursor</button>
+            <button id="reset-state" type="button">Reset Robot</button>
+          </div>
+        </div>
+
+        <div class="status">
+          <h2>Current State</h2>
+          <p id="state-line">Not placed</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Board (0..5)</h2>
+        <div id="board" class="board" aria-live="polite"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Command Log</h2>
+        <ol id="log" class="log"></ol>
+      </section>
+    </main>
+
+    <script type="module" src="./web/app.js"></script>
+  </body>
+</html>

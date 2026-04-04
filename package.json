@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "babel-node ./src/index.js",
-    "test": "jest"
+    "test": "jest --runInBand",
+    "web:build": "node ./scripts/build-site.js",
+    "web:start": "npm run web:build && node ./scripts/serve-static.js dist"
   },
   "author": "Leo",
   "license": "ISC",

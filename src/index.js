@@ -1,12 +1,10 @@
 import Readline from "readline";
-import handleLineInput from "./actions";
+import handleLineInput from "./actions.js";
+import { initialState } from "./simulator.js";
 
 // Initial state
 let state = {
-  x: undefined,
-  y: undefined,
-  f: undefined,
-  Placed: false,
+  ...initialState,
 };
 
 // Create a instruction interface

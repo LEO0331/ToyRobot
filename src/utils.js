@@ -1,4 +1,4 @@
-import validator from "./validators";
+import validator from "./validators.js";
 
 // Create a data transformation pipeline via functional programming
 const pipe = (...arr) =>

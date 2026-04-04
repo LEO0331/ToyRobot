@@ -1,4 +1,4 @@
-import { parseInput, parseParams } from "../src/utils";
+import { parseInput, parseParams } from "../src/utils.js";
 
 describe("utils testCases", () => {
   describe("input function", () => {

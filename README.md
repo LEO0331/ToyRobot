@@ -1,63 +1,87 @@
 # Toy Robot
 
+Toy Robot simulator with two modes:
+
+- CLI simulator (`npm start`)
+- Browser game for GitHub Pages (`npm run web:start`)
+
+Both modes use the same simulator core and command rules.
+
 ## Instructions
 
-This is a program that simulates a Toy Robot moving on a table top. The table top is a grid of 5 units x 5 units. There are no obstructions on the table surface. The Toy Robot is free to roam around the surface of the table, but must be prevented from falling to destruction. A failed or invalid command should not stop the simulation.
+Toy Robot moves on a tabletop grid with no obstacles.
 
-- `PLACE X,Y,F` will place the Toy Robot on the table at position X,Y and facing direction F.
-  - Direction can be one of the cardinal points: `NORTH`, `EAST`, `SOUTH` or `WEST`.
-- `MOVE` will move the Toy Robot one unit forward in the direction it is currently facing.
-- `LEFT` will rotate the Toy Robot 90 degrees left (anti-clockwise/counter-clockwise).
-- `RIGHT` will rotate the Toy Robot 90 degrees right (clockwise).
-- `REPORT` will announce the X,Y,F of Toy Robot.
-- Every command should provide visual output that the command has either succeeded or failed (display fail messages).
+- Grid coordinates are `0..5` for both X and Y (6x6 board).
+- Origin `(0,0)` is the south-west corner.
+- Invalid/failed commands do not stop the simulation.
+
+Commands:
+
+- `PLACE X,Y,F` places the robot at `X,Y` facing `F`.
+- `MOVE` moves one unit forward.
+- `LEFT` rotates 90 degrees anti-clockwise.
+- `RIGHT` rotates 90 degrees clockwise.
+- `REPORT` outputs `X,Y,F`.
+
+Facing direction `F` must be one of:
+
+- `NORTH`
+- `EAST`
+- `SOUTH`
+- `WEST`
 
 ## Assumptions
 
-- Successful commands are upper case (lower case letters would result fail).
-- Allow empty space before/after commands (e.g. ` REPORT` or `PLACE 1,1,NORTH ` result success).
-- Do not allow empty space between position X,Y,F (e.g. `PLACE ,,NORTH` will result fail).
-- Origin (0,0) to be the SOUTH WEST most corner.
-- Inputs are from standard input.
-- Ignore any move that would cause the robot to fall and fail (remain the same state).
-- Discard all commands in the sequence until a valid PLACE command has been executed.
-- Current version installed
-  - npm: 10.2.4
-  - node: 20.11.0
-  - git: 2.39.2 (Apple Git-143)
+- Commands are case-sensitive and must be uppercase.
+- Leading/trailing spaces are allowed (for example ` REPORT`).
+- `PLACE` parameters cannot contain empty values (for example `PLACE ,,NORTH` fails).
+- Any move that would cause a fall fails and keeps the same state.
+- Commands are ignored until the first valid `PLACE`.
 
 ## Constraints
 
-The first valid command must be `PLACE`. After that, any sequence of commands may be issued in any order, including another PLACE command.
+The first valid command must be `PLACE`.
+After that, any sequence of commands is allowed, including another `PLACE`.
 
-## Example Input and Output
+## Example Input/Output
+
 ### Example A
+
 Input:
-```
+
+```text
 PLACE 0,0,NORTH
 MOVE
 REPORT
 ```
 
 Output:
-```
+
+```text
 0,1,NORTH
 ```
+
 ### Example B
+
 Input:
-```
+
+```text
 PLACE 0,0,NORTH
 LEFT
 REPORT
 ```
 
 Output:
-```
+
+```text
 0,0,WEST
 ```
+
 ### Example C
+
 Input:
-```
+
+```text
 PLACE 1,2,EAST
 MOVE
 MOVE
@@ -67,46 +91,68 @@ REPORT
 ```
 
 Output:
-```
+
+```text
 3,3,NORTH
 ```
+
 ## Setup
-#### Make sure you have the latest git, Node.js and Npm installed on your machine
 
-```
-$ git --version
-$ npm --version
-$ node --version
-```
+Install dependencies:
 
-#### Clone the repo from Github
-
-`git clone https://github.com/LEO0331/ToyRobot.git`
-
-#### Install dependencies with `npm install` in the ToyRobot folder
-
-`npm install`
-
-#### Run tests
-
-`npm run test`
-
-#### Run prettier
-
-`npx prettier . --write`
-
-#### Start the simulator
-
-`npm run start` or `npm start`
-
-#### Paste your input followed by Enter
-
-```
-PLACE 0,0,NORTH -> type Enter
-MOVE -> type Enter
-REPORT -> type Enter then the result will show
+```bash
+npm install
 ```
 
-#### Exit the simulator
+Run tests:
 
-`Ctrl + C` or `Cmd + C` to terminate the simulator
+```bash
+npm test
+```
+
+## CLI Mode
+
+Start CLI simulator:
+
+```bash
+npm start
+```
+
+Example input:
+
+```text
+PLACE 0,0,NORTH
+MOVE
+REPORT
+```
+
+Exit with `Ctrl + C` (Windows/Linux) or `Cmd + C` (macOS).
+
+## Web Game Mode
+
+Build and serve the static game locally:
+
+```bash
+npm run web:start
+```
+
+Then open:
+
+- [http://localhost:8080](http://localhost:8080)
+
+Features:
+
+- Visual 6x6 board with robot direction icon
+- Single command input
+- Multiline script mode (Step / Run All)
+- Command log with success/fail messages
+
+## GitHub Pages
+
+Deployment is automated by GitHub Actions via `.github/workflows/deploy-pages.yml`.
+
+- Push to `main` triggers tests + static build + deployment.
+- Expected public URL:
+  - [https://leo0331.github.io/ToyRobot/](https://leo0331.github.io/ToyRobot/)
+
+If your repo name or owner changes, update the URL accordingly.

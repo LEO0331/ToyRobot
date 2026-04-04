@@ -1,5 +1,5 @@
-import validator from "../src/validators";
-import { Commands, Directions } from "../src/constants";
+import validator from "../src/validators.js";
+import { Commands, Directions } from "../src/constants.js";
 
 let xFunc = validator.x;
 let yFunc = validator.y;
