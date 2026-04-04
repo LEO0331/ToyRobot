@@ -10,7 +10,21 @@
     <main class="app">
       <section class="panel">
         <h1>Toy Robot</h1>
-        <p class="subhead">Web game mode with the same command rules as CLI.</p>
+        <p class="subhead">
+          Interactive browser game powered by the same command engine as the CLI.
+        </p>
+        <p id="latest-status" class="latest-status neutral">
+          Waiting for command...
+        </p>
+
+        <div class="controls">
+          <h2>Demo Presets</h2>
+          <div class="row">
+            <button class="preset" data-preset="A" type="button">Example A</button>
+            <button class="preset" data-preset="B" type="button">Example B</button>
+            <button class="preset" data-preset="C" type="button">Example C</button>
+          </div>
+        </div>
 
         <div class="controls">
           <h2>Single Command</h2>
@@ -39,6 +53,7 @@
             <button id="reset-script" type="button">Reset Script Cursor</button>
             <button id="reset-state" type="button">Reset Robot</button>
           </div>
+          <ol id="script-preview" class="script-preview"></ol>
         </div>
 
         <div class="status">

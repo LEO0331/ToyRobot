@@ -5,7 +5,7 @@ Toy Robot simulator with two modes:
 - CLI simulator (`npm start`)
 - Browser game for GitHub Pages (`npm run web:start`)
 
-Both modes use the same simulator core and command rules.
+The browser experience is an interactive game powered by the same command engine and rules as the CLI.
 
 ## Instructions
 
@@ -143,9 +143,22 @@ Then open:
 Features:
 
 - Visual 6x6 board with robot direction icon
+- Demo preset buttons for Example A/B/C
 - Single command input
 - Multiline script mode (Step / Run All)
+- Script progress preview with active-line highlight during stepping
+- Latest command status banner (`SUCCESS` / `FAILED`)
 - Command log with success/fail messages
+
+## Demo Walkthrough
+
+For a clean live demo:
+
+1. Open the app and show the `Board (0..5)` grid.
+2. Click `Example C` in `Demo Presets`.
+3. Click `Step` repeatedly and point out the highlighted active script line.
+4. Show `Current State`, `Latest Status`, and `Command Log` updating together.
+5. Click `Run All` for `Example A` to quickly show expected `REPORT` output.
 
 ## GitHub Pages
 
@@ -156,3 +169,17 @@ Deployment is automated by GitHub Actions via `.github/workflows/deploy-pages.ym
   - [https://leo0331.github.io/ToyRobot/](https://leo0331.github.io/ToyRobot/)
 
 If your repo name or owner changes, update the URL accordingly.
+
+## E2E Smoke Test (Playwright)
+
+Install Playwright browsers once:
+
+```bash
+npx playwright install
+```
+
+Run smoke test:
+
+```bash
+npm run test:e2e
+```

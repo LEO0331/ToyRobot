@@ -15,16 +15,53 @@ const resetStateButton = document.getElementById("reset-state");
 const board = document.getElementById("board");
 const log = document.getElementById("log");
 const stateLine = document.getElementById("state-line");
+const latestStatus = document.getElementById("latest-status");
+const scriptPreview = document.getElementById("script-preview");
+const presetButtons = document.querySelectorAll(".preset");
 
 let state = { ...initialState };
 let scriptCommands = [];
 let scriptCursor = 0;
+
+const demoPresets = {
+  A: "PLACE 0,0,NORTH\nMOVE\nREPORT",
+  B: "PLACE 0,0,NORTH\nLEFT\nREPORT",
+  C: "PLACE 1,2,EAST\nMOVE\nMOVE\nLEFT\nMOVE\nREPORT",
+};
 
 function escapeHtml(text) {
   return String(text)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;");
+}
+
+function setStatusBanner(status, message) {
+  latestStatus.classList.remove("success", "fail", "neutral");
+
+  if (status === "success") {
+    latestStatus.classList.add("success");
+  } else if (status === "fail") {
+    latestStatus.classList.add("fail");
+  } else {
+    latestStatus.classList.add("neutral");
+  }
+
+  latestStatus.textContent = message;
+}
+
+function renderScriptPreview() {
+  if (scriptCommands.length === 0) {
+    scriptPreview.innerHTML = "<li>No parsed script commands yet.</li>";
+    return;
+  }
+
+  scriptPreview.innerHTML = scriptCommands
+    .map((line, index) => {
+      const activeClass = index === scriptCursor ? "active-line" : "";
+      return `<li class="${activeClass}">${escapeHtml(line)}</li>`;
+    })
+    .join("");
 }
 
 function renderState() {
@@ -65,6 +102,7 @@ function executeCommand(commandText) {
   state = result.state;
   renderState();
   renderBoard();
+  setStatusBanner(result.status, result.message);
   appendLog({
     commandText,
     status: result.status,
@@ -76,6 +114,7 @@ function executeCommand(commandText) {
 function reloadScriptCommands() {
   scriptCommands = parseScript(scriptInput.value);
   scriptCursor = 0;
+  renderScriptPreview();
 }
 
 runCommandButton.addEventListener("click", () => {
@@ -98,6 +137,7 @@ stepScriptButton.addEventListener("click", () => {
   }
 
   if (scriptCursor >= scriptCommands.length) {
+    setStatusBanner("fail", "Command failed: Script has no remaining commands");
     appendLog({
       commandText: "SCRIPT",
       status: "fail",
@@ -109,16 +149,20 @@ stepScriptButton.addEventListener("click", () => {
 
   executeCommand(scriptCommands[scriptCursor]);
   scriptCursor += 1;
+  renderScriptPreview();
 });
 
 runScriptButton.addEventListener("click", () => {
   reloadScriptCommands();
   scriptCommands.forEach((command) => executeCommand(command));
   scriptCursor = scriptCommands.length;
+  renderScriptPreview();
 });
 
 resetScriptButton.addEventListener("click", () => {
   scriptCursor = 0;
+  renderScriptPreview();
+  setStatusBanner("success", "Command success: Script cursor reset");
   appendLog({
     commandText: "SCRIPT",
     status: "success",
@@ -131,6 +175,7 @@ resetStateButton.addEventListener("click", () => {
   state = { ...initialState };
   renderState();
   renderBoard();
+  setStatusBanner("success", "Command success: Robot state reset");
   appendLog({
     commandText: "RESET",
     status: "success",
@@ -139,5 +184,19 @@ resetStateButton.addEventListener("click", () => {
   });
 });
 
+scriptInput.addEventListener("input", () => {
+  reloadScriptCommands();
+});
+
+presetButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const presetKey = button.dataset.preset;
+    scriptInput.value = demoPresets[presetKey] || "";
+    reloadScriptCommands();
+    setStatusBanner("neutral", `Preset loaded: Example ${presetKey}`);
+  });
+});
+
 renderState();
 renderBoard();
+reloadScriptCommands();

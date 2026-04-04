@@ -5,6 +5,7 @@
   --muted: #4f5d4f;
   --accent: #1f7a4f;
   --fail: #8c2f1c;
+  --neutral: #4f5d4f;
   --grid: #d6d1bd;
   --robot: #1546a6;
 }
@@ -45,6 +46,32 @@ body {
 
 .controls {
   margin-top: 1rem;
+}
+
+.latest-status {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.latest-status.success {
+  color: var(--accent);
+  border-color: #bdd9ca;
+  background: #ecf7f1;
+}
+
+.latest-status.fail {
+  color: var(--fail);
+  border-color: #e2c0b8;
+  background: #fff1ee;
+}
+
+.latest-status.neutral {
+  color: var(--neutral);
+  border-color: #d6d1bd;
+  background: #f7f4e9;
 }
 
 .row {
@@ -117,6 +144,28 @@ button:hover {
 .status p {
   margin: 0.3rem 0 0;
   font-weight: 600;
+}
+
+.script-preview {
+  margin: 0.7rem 0 0;
+  padding-left: 1.3rem;
+  max-height: 180px;
+  overflow: auto;
+  border: 1px solid #d8d1b8;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.script-preview li {
+  margin: 0.2rem 0;
+  padding: 0.15rem 0.35rem;
+}
+
+.script-preview li.active-line {
+  font-weight: 700;
+  color: #173c90;
+  background: #edf2ff;
+  border-radius: 6px;
 }
 
 .log {
