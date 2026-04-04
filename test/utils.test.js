@@ -30,6 +30,11 @@ describe("utils testCases", () => {
         "PLACE 1,,NORTH",
         "PLACE 1,2,",
         "PLACE 1,2,NORTH,",
+        "PLACE 1.2,1,NORTH",
+        "PLACE 1,2.5,NORTH",
+        "PLACE 1e1,2,NORTH",
+        "PLACE -1,2,NORTH",
+        "PLACE 1, 2,NORTH",
       ];
       invalidInputs.forEach((input) => {
         expect(() => {
@@ -82,6 +87,10 @@ describe("utils testCases", () => {
           input: " PLACE 1,1,EAST ",
           expected: { cmd: "PLACE", args: { x: 1, y: 1, f: "EAST" } },
         },
+        {
+          input: "PLACE     5,5,WEST",
+          expected: { cmd: "PLACE", args: { x: 5, y: 5, f: "WEST" } },
+        },
       ];
       validInputs.forEach((c) => {
         const actual = parseInput(c.input);
@@ -126,6 +135,13 @@ describe("utils testCases", () => {
           );
         }
       });
+    });
+
+    test("given an overly long command throws RangeError", () => {
+      const longCommand = `PLACE ${"1".repeat(101)},0,NORTH`;
+      expect(() => parseInput(longCommand)).toThrow(
+        "Input too long, please keep command length under 100 characters",
+      );
     });
 
     test("given a PLACE command with correct args of the parseParams function returns valid input values", () => {

@@ -10,7 +10,7 @@ describe("validator testCases", () => {
   describe("x validator", () => {
     test("given an invalid type returns false", () => {
       const expected = false;
-      const xValues = [undefined, null, NaN, "string", {}, []];
+      const xValues = [undefined, null, NaN, "string", {}, [], Infinity, 2.5];
       xValues.forEach((x) => {
         const actual = xFunc(x);
         expect(actual).toEqual(expected);
@@ -39,7 +39,7 @@ describe("validator testCases", () => {
   describe("y validator", () => {
     test("given an invalid type returns false", () => {
       const expected = false;
-      const yValues = [undefined, null, NaN, "string", {}, []];
+      const yValues = [undefined, null, NaN, "string", {}, [], Infinity, 4.2];
       yValues.forEach((y) => {
         const actual = yFunc(y);
         expect(actual).toEqual(expected);

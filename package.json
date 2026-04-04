@@ -6,7 +6,9 @@
   "scripts": {
     "start": "babel-node ./src/index.js",
     "test": "jest --runInBand",
+    "test:coverage": "jest --runInBand --coverage",
     "test:e2e": "playwright test",
+    "security:check": "npm audit --audit-level=moderate",
     "web:build": "node ./scripts/build-site.js",
     "web:start": "npm run web:build && node ./scripts/serve-static.js dist"
   },

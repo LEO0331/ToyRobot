@@ -1,5 +1,8 @@
 import validator from "./validators.js";
 
+const MAX_INPUT_LENGTH = 100;
+const PLACE_PARAM_PATTERN = /^(\d+),(\d+),(NORTH|EAST|SOUTH|WEST)$/;
+
 // Create a data transformation pipeline via functional programming
 const pipe = (...arr) =>
   arr.reduce(
@@ -33,26 +36,29 @@ function parseParams(command, params) {
     );
   }
 
-  // Handle X,Y,F separately with correct types
-  const args = params.trim().split(",");
+  const normalizedParams = params.trim();
+  const matched = normalizedParams.match(PLACE_PARAM_PATTERN);
 
-  if (
-    args.length !== 3 ||
-    args[0] === "" ||
-    args[1] === "" ||
-    !validator.x(Number(args[0])) ||
-    !validator.y(Number(args[1])) ||
-    !validator.f(args[2])
-  ) {
+  if (!matched) {
+    throw new RangeError(
+      "Command failed: Please enter allowed values (non empty numbers between 0-5) of position X,Y and facing direction F (NORTH, EAST, SOUTH, WEST)",
+    );
+  }
+
+  const x = Number(matched[1]);
+  const y = Number(matched[2]);
+  const f = matched[3];
+
+  if (!validator.x(x) || !validator.y(y) || !validator.f(f)) {
     throw new RangeError(
       "Command failed: Please enter allowed values (non empty numbers between 0-5) of position X,Y and facing direction F (NORTH, EAST, SOUTH, WEST)",
     );
   }
 
   return {
-    x: Number(args[0]),
-    y: Number(args[1]),
-    f: args[2],
+    x,
+    y,
+    f,
   };
 }
 
@@ -71,14 +77,34 @@ function parseInput(input) {
     throw new TypeError();
   }
 
+  const normalizedInput = input.trim();
+
+  if (normalizedInput.length > MAX_INPUT_LENGTH) {
+    throw new RangeError(
+      "Command failed: Input too long, please keep command length under 100 characters",
+    );
+  }
+
   const { cmd, args } = pipe(
-    // Handle PLACE cmd/args and trim white spaces
-    (arr) => arr.trim().split(" "),
-    ([command, params]) => ({
+    // Handle whitespace between command and params safely
+    (arr) => arr.match(/^(\S+)(?:\s+(.+))?$/),
+    (match) => {
+      if (!match) {
+        throw new RangeError(
+          "Command failed: Please enter allowed values of commands (PLACE, MOVE, LEFT, RIGHT, REPORT)",
+        );
+      }
+
+      return {
+        command: match[1],
+        params: match[2],
+      };
+    },
+    ({ command, params }) => ({
       cmd: parseCommand(command),
       args: parseParams(command, params),
     }),
-  )(input);
+  )(normalizedInput);
 
   return {
     cmd,
