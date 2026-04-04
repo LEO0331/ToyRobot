@@ -131,7 +131,7 @@ h2 {
 }
 
 .subhead {
-  margin: 1rem 0 0;
+  margin: 1.2rem 0 0;
   max-width: 66ch;
   color: var(--muted);
   font-size: 0.98rem;
@@ -293,6 +293,10 @@ button:active {
   margin: 0.28rem 0 0;
   font-weight: 700;
   color: #1a3f94;
+}
+
+.status {
+  margin-top: 1.15rem;
 }
 
 .script-preview {

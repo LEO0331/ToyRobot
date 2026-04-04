@@ -1,5 +1,12 @@
+const fs = require("fs");
+const os = require("os");
 const path = require("path");
-const { resolveFilePath, securityHeaders } = require("../scripts/serve-static.js");
+const http = require("http");
+const {
+  createStaticServer,
+  resolveFilePath,
+  securityHeaders,
+} = require("../scripts/serve-static.js");
 
 describe("serve-static security checks", () => {
   const rootDir = path.resolve(__dirname, "..", "dist");
@@ -24,5 +31,107 @@ describe("serve-static security checks", () => {
     expect(securityHeaders["X-Content-Type-Options"]).toBe("nosniff");
     expect(securityHeaders["X-Frame-Options"]).toBe("DENY");
     expect(securityHeaders["Referrer-Policy"]).toBe("no-referrer");
+  });
+});
+
+describe("serve-static integration", () => {
+  let tempRoot;
+  let server;
+  let port;
+
+  function request({ method = "GET", pathname = "/" }) {
+    return new Promise((resolve, reject) => {
+      const req = http.request(
+        {
+          hostname: "127.0.0.1",
+          port,
+          path: pathname,
+          method,
+        },
+        (response) => {
+          let data = "";
+          response.setEncoding("utf8");
+          response.on("data", (chunk) => {
+            data += chunk;
+          });
+          response.on("end", () => {
+            resolve({
+              statusCode: response.statusCode,
+              headers: response.headers,
+              body: data,
+            });
+          });
+        },
+      );
+
+      req.on("error", reject);
+      req.end();
+    });
+  }
+
+  beforeAll(async () => {
+    tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "toyrobot-static-"));
+    fs.writeFileSync(path.join(tempRoot, "index.html"), "<h1>Toy Robot</h1>");
+    fs.writeFileSync(path.join(tempRoot, "app.js"), "console.log('ok');");
+
+    server = createStaticServer(tempRoot);
+    await new Promise((resolve) => {
+      server.listen(0, "127.0.0.1", () => {
+        port = server.address().port;
+        resolve();
+      });
+    });
+  });
+
+  afterAll(async () => {
+    if (server) {
+      await new Promise((resolve) => server.close(resolve));
+    }
+    if (tempRoot) {
+      fs.rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("serves index and security headers for GET /", async () => {
+    const res = await request({ pathname: "/" });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toContain("Toy Robot");
+    expect(res.headers["x-content-type-options"]).toBe("nosniff");
+    expect(res.headers["x-frame-options"]).toBe("DENY");
+    expect(res.headers["referrer-policy"]).toBe("no-referrer");
+    expect(res.headers["content-type"]).toContain("text/html");
+  });
+
+  test("serves JS content type correctly", async () => {
+    const res = await request({ pathname: "/app.js" });
+    expect(res.statusCode).toBe(200);
+    expect(res.headers["content-type"]).toContain("text/javascript");
+    expect(res.body).toContain("console.log");
+  });
+
+  test("returns empty body for HEAD request", async () => {
+    const res = await request({ method: "HEAD", pathname: "/" });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toBe("");
+    expect(res.headers["content-type"]).toContain("text/html");
+  });
+
+  test("returns 404 for missing files", async () => {
+    const res = await request({ pathname: "/missing-file.txt" });
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toBe("Not Found");
+  });
+
+  test("returns 403 for traversal attempts", async () => {
+    const res = await request({ pathname: "/%2e%2e/%2e%2e/secret.txt" });
+    expect(res.statusCode).toBe(403);
+    expect(res.body).toBe("Forbidden");
+  });
+
+  test("returns 405 for unsupported methods", async () => {
+    const res = await request({ method: "POST", pathname: "/" });
+    expect(res.statusCode).toBe(405);
+    expect(res.headers.allow).toBe("GET, HEAD");
+    expect(res.body).toBe("Method Not Allowed");
   });
 });
