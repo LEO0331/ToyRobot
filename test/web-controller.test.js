@@ -7,6 +7,10 @@ import {
 } from "../src/web-controller.js";
 
 describe("web controller helpers", () => {
+  test("returns empty script list for non-string input", () => {
+    expect(parseScript(null)).toEqual([]);
+  });
+
   test("parses multiline script into executable commands", () => {
     const script = "PLACE 0,0,NORTH\n\nMOVE\n REPORT ";
     expect(parseScript(script)).toEqual(["PLACE 0,0,NORTH", "MOVE", "REPORT"]);

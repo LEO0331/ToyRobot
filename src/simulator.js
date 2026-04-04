@@ -129,13 +129,6 @@ function executeCommand(cmd, args, state) {
     case "REPORT":
       result = report(stateWithPlacement);
       break;
-    default:
-      result = {
-        state: stateWithPlacement,
-        status: "success",
-        message: "Command success",
-      };
-      break;
   }
 
   return {

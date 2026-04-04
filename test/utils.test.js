@@ -15,6 +15,7 @@ describe("utils testCases", () => {
 
     test("given a PLACE command containing invalid/empty argument(s) provided throws RangeError", () => {
       const invalidInputs = [
+        "",
         "PLACE ",
         "PLACE 1",
         "PLACE 1,2",
@@ -35,6 +36,8 @@ describe("utils testCases", () => {
         "PLACE 1e1,2,NORTH",
         "PLACE -1,2,NORTH",
         "PLACE 1, 2,NORTH",
+        "PLACE 9,1,NORTH",
+        "PLACE 1,9,NORTH",
       ];
       invalidInputs.forEach((input) => {
         expect(() => {

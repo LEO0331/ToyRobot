@@ -6,6 +6,7 @@ const {
   createStaticServer,
   resolveFilePath,
   securityHeaders,
+  startServerFromCli,
 } = require("../scripts/serve-static.js");
 
 describe("serve-static security checks", () => {
@@ -23,6 +24,7 @@ describe("serve-static security checks", () => {
   });
 
   test("blocks malformed and null-byte request paths", () => {
+    expect(resolveFilePath(rootDir, 123)).toBeNull();
     expect(resolveFilePath(rootDir, "/%E0%A4%A")).toBeNull();
     expect(resolveFilePath(rootDir, "/index.html\0.js")).toBeNull();
   });
@@ -73,6 +75,7 @@ describe("serve-static integration", () => {
     tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "toyrobot-static-"));
     fs.writeFileSync(path.join(tempRoot, "index.html"), "<h1>Toy Robot</h1>");
     fs.writeFileSync(path.join(tempRoot, "app.js"), "console.log('ok');");
+    fs.writeFileSync(path.join(tempRoot, "blob.bin"), "bin-data");
 
     server = createStaticServer(tempRoot);
     await new Promise((resolve) => {
@@ -109,6 +112,13 @@ describe("serve-static integration", () => {
     expect(res.body).toContain("console.log");
   });
 
+  test("falls back to octet-stream content type for unknown extension", async () => {
+    const res = await request({ pathname: "/blob.bin" });
+    expect(res.statusCode).toBe(200);
+    expect(res.headers["content-type"]).toContain("application/octet-stream");
+    expect(res.body).toContain("bin-data");
+  });
+
   test("returns empty body for HEAD request", async () => {
     const res = await request({ method: "HEAD", pathname: "/" });
     expect(res.statusCode).toBe(200);
@@ -133,5 +143,20 @@ describe("serve-static integration", () => {
     expect(res.statusCode).toBe(405);
     expect(res.headers.allow).toBe("GET, HEAD");
     expect(res.body).toBe("Method Not Allowed");
+  });
+
+  test("bootstraps from cli helper", async () => {
+    const messages = [];
+    const cliServer = startServerFromCli(
+      ["node", "serve-static.js", tempRoot],
+      { PORT: "0" },
+      (msg) => messages.push(msg),
+    );
+
+    await new Promise((resolve) => cliServer.on("listening", resolve));
+    expect(messages.some((msg) => msg.includes("Serving"))).toBe(true);
+    expect(messages.some((msg) => msg.includes(tempRoot))).toBe(true);
+
+    await new Promise((resolve) => cliServer.close(resolve));
   });
 });

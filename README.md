@@ -1,5 +1,9 @@
 # Toy Robot
 
+[![Deploy GitHub Pages](https://github.com/LEO0331/ToyRobot/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/LEO0331/ToyRobot/actions/workflows/deploy-pages.yml)
+[![Coverage Statements](https://img.shields.io/badge/coverage%20(statements)-100%25-brightgreen)](https://github.com/LEO0331/ToyRobot)
+[![Coverage Branches](https://img.shields.io/badge/coverage%20(branches)-89.43%25-yellowgreen)](https://github.com/LEO0331/ToyRobot)
+
 Toy Robot simulator with two modes:
 
 - CLI simulator (`npm start`)

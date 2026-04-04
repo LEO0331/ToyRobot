@@ -95,17 +95,30 @@ function createStaticServer(rootDir) {
   });
 }
 
-if (require.main === module) {
-  const rootDir = path.resolve(process.cwd(), process.argv[2] || "dist");
-  const port = Number(process.env.PORT || 8080);
+function startServerFromCli(
+  argv = process.argv,
+  env = process.env,
+  logger = console.log,
+) {
+  const rootDir = path.resolve(process.cwd(), argv[2] || "dist");
+  const port = Number(env.PORT || 8080);
+  const server = createStaticServer(rootDir);
 
-  createStaticServer(rootDir).listen(port, () => {
-    console.log(`Serving ${rootDir} at http://localhost:${port}`);
+  server.listen(port, () => {
+    logger(`Serving ${rootDir} at http://localhost:${port}`);
   });
+
+  return server;
+}
+
+/* istanbul ignore next */
+if (require.main === module) {
+  startServerFromCli();
 }
 
 module.exports = {
   createStaticServer,
   resolveFilePath,
   securityHeaders,
+  startServerFromCli,
 };
