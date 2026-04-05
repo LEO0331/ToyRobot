@@ -18,6 +18,12 @@ const stateLine = document.getElementById("state-line");
 const latestStatus = document.getElementById("latest-status");
 const scriptPreview = document.getElementById("script-preview");
 const presetButtons = document.querySelectorAll(".preset");
+const runPresetButton = document.getElementById("run-preset");
+const selectedPresetLine = document.getElementById("selected-preset");
+const customPresetName = document.getElementById("custom-preset-name");
+const customPresetCommands = document.getElementById("custom-preset-commands");
+const saveCustomPresetButton = document.getElementById("save-custom-preset");
+const customPresetList = document.getElementById("custom-preset-list");
 const helpToggle = document.getElementById("help-toggle");
 const helpPanel = document.getElementById("help-panel");
 const buttonModeToggle = document.getElementById("button-mode-toggle");
@@ -33,11 +39,13 @@ const buttonResetState = document.getElementById("button-reset-state");
 let state = { ...initialState };
 let scriptCommands = [];
 let scriptCursor = 0;
+let selectedPresetKey = "A";
+let customPresetCount = 0;
 
-const demoPresets = {
-  A: "PLACE 0,0,NORTH\nMOVE\nREPORT",
-  B: "PLACE 0,0,NORTH\nLEFT\nREPORT",
-  C: "PLACE 1,2,EAST\nMOVE\nMOVE\nLEFT\nMOVE\nREPORT",
+const presetStore = {
+  A: { label: "Example A", commands: "PLACE 0,0,NORTH\nMOVE\nREPORT" },
+  B: { label: "Example B", commands: "PLACE 0,0,NORTH\nLEFT\nREPORT" },
+  C: { label: "Example C", commands: "PLACE 1,2,EAST\nMOVE\nMOVE\nLEFT\nMOVE\nREPORT" },
 };
 
 function escapeHtml(text) {
@@ -128,6 +136,43 @@ function reloadScriptCommands() {
   renderScriptPreview();
 }
 
+function runPresetByKey(presetKey) {
+  const preset = presetStore[presetKey];
+  if (!preset) {
+    setStatusBanner("fail", "Command failed: Preset not found");
+    return;
+  }
+
+  const commands = parseScript(preset.commands);
+  if (commands.length === 0) {
+    setStatusBanner("fail", "Command failed: Preset has no runnable commands");
+    return;
+  }
+
+  commands.forEach((command) => executeCommand(command));
+  setStatusBanner("success", `Command success: Ran preset ${preset.label}`);
+}
+
+function selectPreset(presetKey) {
+  const preset = presetStore[presetKey];
+  if (!preset) {
+    return;
+  }
+
+  selectedPresetKey = presetKey;
+  scriptInput.value = preset.commands;
+  reloadScriptCommands();
+  selectedPresetLine.textContent = `Selected preset: ${preset.label}`;
+  setStatusBanner("neutral", `Preset loaded: ${preset.label}`);
+}
+
+function attachPresetButtonHandler(button) {
+  button.addEventListener("click", () => {
+    const presetKey = button.dataset.preset;
+    selectPreset(presetKey);
+  });
+}
+
 function resetRobotState() {
   state = { ...initialState };
   renderState();
@@ -215,12 +260,7 @@ scriptInput.addEventListener("input", () => {
 });
 
 presetButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const presetKey = button.dataset.preset;
-    scriptInput.value = demoPresets[presetKey] || "";
-    reloadScriptCommands();
-    setStatusBanner("neutral", `Preset loaded: Example ${presetKey}`);
-  });
+  attachPresetButtonHandler(button);
 });
 
 buttonModeToggle.addEventListener("change", (event) => {
@@ -242,6 +282,46 @@ buttonResetState.addEventListener("click", () => {
   resetRobotState();
 });
 
+runPresetButton.addEventListener("click", () => {
+  runPresetByKey(selectedPresetKey);
+});
+
+saveCustomPresetButton.addEventListener("click", () => {
+  const name = customPresetName.value.trim();
+  const commands = customPresetCommands.value;
+  const parsed = parseScript(commands);
+
+  if (!name) {
+    setStatusBanner("fail", "Command failed: Preset name is required");
+    return;
+  }
+
+  if (parsed.length === 0) {
+    setStatusBanner("fail", "Command failed: Preset commands cannot be empty");
+    return;
+  }
+
+  customPresetCount += 1;
+  const presetKey = `CUSTOM_${customPresetCount}`;
+  presetStore[presetKey] = {
+    label: name,
+    commands,
+  };
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "preset";
+  button.dataset.preset = presetKey;
+  button.textContent = name;
+  attachPresetButtonHandler(button);
+  customPresetList.prepend(button);
+
+  customPresetName.value = "";
+  customPresetCommands.value = "";
+  selectPreset(presetKey);
+  setStatusBanner("success", `Command success: Preset "${name}" saved`);
+});
+
 helpToggle.addEventListener("click", () => {
   const isHidden = helpPanel.classList.toggle("hidden-controls");
   helpToggle.textContent = isHidden ? "Help" : "Close Help";
@@ -251,3 +331,4 @@ renderState();
 renderBoard();
 reloadScriptCommands();
 toggleControlMode(false);
+selectPreset("A");

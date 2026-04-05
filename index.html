@@ -50,6 +50,26 @@
             <button class="preset" data-preset="A" type="button">Example A</button>
             <button class="preset" data-preset="B" type="button">Example B</button>
             <button class="preset" data-preset="C" type="button">Example C</button>
+            <button id="run-preset" type="button">Run Preset</button>
+          </div>
+          <p id="selected-preset" class="preset-meta">Selected preset: Example A</p>
+
+          <div class="custom-preset">
+            <h2>Create Preset</h2>
+            <input
+              id="custom-preset-name"
+              type="text"
+              placeholder="Preset name (for example, Patrol Loop)"
+              aria-label="Custom preset name"
+            />
+            <textarea
+              id="custom-preset-commands"
+              rows="4"
+              placeholder="PLACE 0,0,NORTH&#10;MOVE&#10;RIGHT&#10;REPORT"
+              aria-label="Custom preset commands"
+            ></textarea>
+            <button id="save-custom-preset" type="button">Save Preset</button>
+            <div id="custom-preset-list" class="row"></div>
           </div>
         </div>
 

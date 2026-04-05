@@ -153,6 +153,23 @@ h2 {
   margin-bottom: 0.38rem;
 }
 
+.preset-meta {
+  margin: 0.55rem 0 0;
+  font-size: 0.9rem;
+  color: #315392;
+  font-weight: 700;
+}
+
+.custom-preset {
+  margin-top: 0.8rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed #bed0f5;
+}
+
+.custom-preset .row {
+  margin-top: 0.55rem;
+}
+
 .controls {
   margin-top: 1rem;
   padding: 0.8rem;
