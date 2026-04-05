@@ -185,7 +185,8 @@ button {
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   border: 2px solid #c8d7f8;
   border-radius: 12px;
@@ -196,7 +197,8 @@ textarea {
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: none;
   border-color: #4f8dff;
   box-shadow: 0 0 0 4px rgba(79, 141, 255, 0.22);
@@ -231,6 +233,47 @@ button:hover {
 button:active {
   transform: translateY(2px);
   box-shadow: 0 1px 0 rgba(24, 56, 120, 0.72);
+}
+
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  color: #23407f;
+}
+
+.mode-toggle input {
+  width: 18px;
+  height: 18px;
+}
+
+.hidden-controls {
+  display: none;
+}
+
+.place-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(70px, 1fr));
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.place-controls label {
+  font-weight: 700;
+  color: #244285;
+}
+
+.action-pad {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(90px, 1fr));
+  gap: 0.55rem;
+}
+
+.action-pad button[data-command="MOVE"] {
+  grid-column: 2 / span 1;
+  background: linear-gradient(145deg, #d7fff3, #8af0cf);
 }
 
 .board {
@@ -357,5 +400,13 @@ button:active {
 
   h1 {
     box-shadow: 0 10px 0 rgba(17, 34, 72, 0.6);
+  }
+
+  .place-controls {
+    grid-template-columns: repeat(2, minmax(70px, 1fr));
+  }
+
+  .action-pad {
+    grid-template-columns: repeat(2, minmax(90px, 1fr));
   }
 }

@@ -18,6 +18,15 @@ const stateLine = document.getElementById("state-line");
 const latestStatus = document.getElementById("latest-status");
 const scriptPreview = document.getElementById("script-preview");
 const presetButtons = document.querySelectorAll(".preset");
+const buttonModeToggle = document.getElementById("button-mode-toggle");
+const textControls = document.getElementById("text-controls");
+const buttonControls = document.getElementById("button-controls");
+const placeX = document.getElementById("place-x");
+const placeY = document.getElementById("place-y");
+const placeF = document.getElementById("place-f");
+const placeButton = document.getElementById("place-button");
+const actionPadButtons = document.querySelectorAll("[data-command]");
+const buttonResetState = document.getElementById("button-reset-state");
 
 let state = { ...initialState };
 let scriptCommands = [];
@@ -117,6 +126,30 @@ function reloadScriptCommands() {
   renderScriptPreview();
 }
 
+function resetRobotState() {
+  state = { ...initialState };
+  renderState();
+  renderBoard();
+  setStatusBanner("success", "Command success: Robot state reset");
+  appendLog({
+    commandText: "RESET",
+    status: "success",
+    message: "Command success: Robot state reset",
+    reportOutput: null,
+  });
+}
+
+function toggleControlMode(useButtonControls) {
+  textControls.classList.toggle("hidden-controls", useButtonControls);
+  buttonControls.classList.toggle("hidden-controls", !useButtonControls);
+  setStatusBanner(
+    "neutral",
+    useButtonControls
+      ? "Button mode enabled: use PLACE/LEFT/MOVE/RIGHT/REPORT controls"
+      : "Text mode enabled: use command or script input",
+  );
+}
+
 runCommandButton.addEventListener("click", () => {
   const commandText = commandInput.value;
   executeCommand(commandText);
@@ -172,16 +205,7 @@ resetScriptButton.addEventListener("click", () => {
 });
 
 resetStateButton.addEventListener("click", () => {
-  state = { ...initialState };
-  renderState();
-  renderBoard();
-  setStatusBanner("success", "Command success: Robot state reset");
-  appendLog({
-    commandText: "RESET",
-    status: "success",
-    message: "Command success: Robot state reset",
-    reportOutput: null,
-  });
+  resetRobotState();
 });
 
 scriptInput.addEventListener("input", () => {
@@ -197,6 +221,26 @@ presetButtons.forEach((button) => {
   });
 });
 
+buttonModeToggle.addEventListener("change", (event) => {
+  toggleControlMode(event.target.checked);
+});
+
+placeButton.addEventListener("click", () => {
+  const command = `PLACE ${placeX.value},${placeY.value},${placeF.value}`;
+  executeCommand(command);
+});
+
+actionPadButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    executeCommand(button.dataset.command);
+  });
+});
+
+buttonResetState.addEventListener("click", () => {
+  resetRobotState();
+});
+
 renderState();
 renderBoard();
 reloadScriptCommands();
+toggleControlMode(false);

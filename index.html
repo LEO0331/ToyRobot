@@ -27,33 +27,87 @@
         </div>
 
         <div class="controls">
-          <h2>Single Command</h2>
-          <div class="row">
-            <input
-              id="command-input"
-              type="text"
-              placeholder="PLACE 0,0,NORTH"
-              aria-label="Single command input"
-            />
-            <button id="run-command" type="button">Run</button>
+          <h2>Control Mode</h2>
+          <label class="mode-toggle" for="button-mode-toggle">
+            <input id="button-mode-toggle" type="checkbox" />
+            Use button interface
+          </label>
+        </div>
+
+        <div id="text-controls">
+          <div class="controls">
+            <h2>Single Command</h2>
+            <div class="row">
+              <input
+                id="command-input"
+                type="text"
+                placeholder="PLACE 0,0,NORTH"
+                aria-label="Single command input"
+              />
+              <button id="run-command" type="button">Run</button>
+            </div>
+          </div>
+
+          <div class="controls">
+            <h2>Script Mode</h2>
+            <textarea
+              id="script-input"
+              rows="8"
+              placeholder="PLACE 0,0,NORTH&#10;MOVE&#10;RIGHT&#10;REPORT"
+              aria-label="Script input"
+            ></textarea>
+            <div class="row">
+              <button id="step-script" type="button">Step</button>
+              <button id="run-script" type="button">Run All</button>
+              <button id="reset-script" type="button">Reset Script Cursor</button>
+              <button id="reset-state" type="button">Reset Robot</button>
+            </div>
+            <ol id="script-preview" class="script-preview"></ol>
           </div>
         </div>
 
-        <div class="controls">
-          <h2>Script Mode</h2>
-          <textarea
-            id="script-input"
-            rows="8"
-            placeholder="PLACE 0,0,NORTH&#10;MOVE&#10;RIGHT&#10;REPORT"
-            aria-label="Script input"
-          ></textarea>
-          <div class="row">
-            <button id="step-script" type="button">Step</button>
-            <button id="run-script" type="button">Run All</button>
-            <button id="reset-script" type="button">Reset Script Cursor</button>
-            <button id="reset-state" type="button">Reset Robot</button>
+        <div id="button-controls" class="hidden-controls">
+          <div class="controls">
+            <h2>Button Commands</h2>
+            <div class="place-controls">
+              <label for="place-x">X</label>
+              <select id="place-x" aria-label="Place X coordinate">
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+
+              <label for="place-y">Y</label>
+              <select id="place-y" aria-label="Place Y coordinate">
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+
+              <label for="place-f">Facing</label>
+              <select id="place-f" aria-label="Place facing direction">
+                <option>NORTH</option>
+                <option>EAST</option>
+                <option>SOUTH</option>
+                <option>WEST</option>
+              </select>
+              <button id="place-button" type="button">PLACE</button>
+            </div>
+
+            <div class="action-pad">
+              <button data-command="LEFT" type="button">LEFT</button>
+              <button data-command="MOVE" type="button">MOVE</button>
+              <button data-command="RIGHT" type="button">RIGHT</button>
+              <button data-command="REPORT" type="button">REPORT</button>
+              <button id="button-reset-state" type="button">RESET</button>
+            </div>
           </div>
-          <ol id="script-preview" class="script-preview"></ol>
         </div>
 
         <div class="status">
