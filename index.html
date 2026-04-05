@@ -11,8 +11,35 @@
       <section class="panel">
         <h1>Toy Robot</h1>
         <p class="subhead">
-          Interactive browser game powered by the same command engine as the CLI.
+          Guide your toy robot with simple controls and see every move update live on the board.
         </p>
+        <button id="help-toggle" class="help-toggle" type="button">
+          Help
+        </button>
+        <div id="help-panel" class="controls hidden-controls">
+          <h2>How To Control</h2>
+          <ul class="help-list">
+            <li>
+              Start with <strong>PLACE X,Y,F</strong> before any move commands.
+            </li>
+            <li>
+              In <strong>Text mode</strong>, type single commands or run multiline
+              script commands with Step/Run All.
+            </li>
+            <li>
+              In <strong>Button mode</strong>, select X, Y, and Facing then press
+              PLACE, then use LEFT/MOVE/RIGHT/REPORT buttons.
+            </li>
+            <li>
+              Valid commands are uppercase only: PLACE, MOVE, LEFT, RIGHT,
+              REPORT.
+            </li>
+            <li>
+              Grid range is <strong>0..5</strong>. Any move that would fall is
+              rejected and state remains unchanged.
+            </li>
+          </ul>
+        </div>
         <p id="latest-status" class="latest-status neutral">
           Waiting for command...
         </p>

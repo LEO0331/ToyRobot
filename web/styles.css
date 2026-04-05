@@ -137,6 +137,22 @@ h2 {
   font-size: 0.98rem;
 }
 
+.help-toggle {
+  margin-top: 0.5rem;
+  padding: 0.28rem 0.62rem;
+  font-size: 0.85rem;
+  border-radius: 10px;
+}
+
+.help-list {
+  margin: 0.2rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.help-list li {
+  margin-bottom: 0.38rem;
+}
+
 .controls {
   margin-top: 1rem;
   padding: 0.8rem;

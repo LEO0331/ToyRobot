@@ -18,6 +18,8 @@ const stateLine = document.getElementById("state-line");
 const latestStatus = document.getElementById("latest-status");
 const scriptPreview = document.getElementById("script-preview");
 const presetButtons = document.querySelectorAll(".preset");
+const helpToggle = document.getElementById("help-toggle");
+const helpPanel = document.getElementById("help-panel");
 const buttonModeToggle = document.getElementById("button-mode-toggle");
 const textControls = document.getElementById("text-controls");
 const buttonControls = document.getElementById("button-controls");
@@ -238,6 +240,11 @@ actionPadButtons.forEach((button) => {
 
 buttonResetState.addEventListener("click", () => {
   resetRobotState();
+});
+
+helpToggle.addEventListener("click", () => {
+  const isHidden = helpPanel.classList.toggle("hidden-controls");
+  helpToggle.textContent = isHidden ? "Help" : "Close Help";
 });
 
 renderState();
