@@ -63,27 +63,19 @@ function move(state) {
 }
 
 function turn(cmd, state) {
-  let { f: face } = state;
+  const { f: face } = state;
   const facingIdx = Directions.indexOf(face);
-  const lastIdx = Directions.length - 1;
-
-  if (face === Directions[0] && cmd === "LEFT") {
-    face = Directions[lastIdx];
-  } else if (face === Directions[lastIdx] && cmd === "RIGHT") {
-    face = Directions[0];
-  } else if (cmd === "RIGHT") {
-    face = Directions[facingIdx + 1];
-  } else if (cmd === "LEFT") {
-    face = Directions[facingIdx - 1];
-  }
+  const delta = cmd === "RIGHT" ? 1 : -1;
+  const nextIdx = (facingIdx + delta + Directions.length) % Directions.length;
+  const nextFace = Directions[nextIdx];
 
   return {
     state: {
       ...state,
-      f: face,
+      f: nextFace,
     },
     status: "success",
-    message: `Command success: Robot now faces ${face}`,
+    message: `Command success: Robot now faces ${nextFace}`,
   };
 }
 
@@ -142,13 +134,15 @@ function runCommand(input, state = initialState) {
     const { cmd, args } = parseInput(input);
     return executeCommand(cmd, args, state);
   } catch (error) {
+    const message =
+      error && typeof error === "object" && "message" in error && error.message
+        ? error.message
+        : "Command failed: Unknown parsing error";
+
     return {
       state,
       status: "fail",
-      message:
-        error instanceof Error
-          ? error.message
-          : "Command failed: Unknown parsing error",
+      message,
       command: null,
     };
   }

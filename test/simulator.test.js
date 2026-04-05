@@ -90,6 +90,12 @@ describe("simulator runCommand", () => {
       runCommand("PLACE 1,1,SOUTH", { ...initialState }).state,
     ).state;
     expect(southToEast.f).toBe("EAST");
+
+    const eastToNorth = runCommand(
+      "LEFT",
+      runCommand("PLACE 1,1,EAST", { ...initialState }).state,
+    ).state;
+    expect(eastToNorth.f).toBe("NORTH");
   });
 
   test("allows re-PLACE after initial placement", () => {
@@ -104,5 +110,18 @@ describe("simulator runCommand", () => {
   test("keeps command information in execution result", () => {
     const result = runCommand("PLACE 0,0,NORTH", { ...initialState });
     expect(result.command).toBe("PLACE");
+  });
+
+  test("uses default initial state when state argument is omitted", () => {
+    const result = runCommand("PLACE 0,0,NORTH");
+    expect(result.status).toBe("success");
+    expect(result.state).toMatchObject({ x: 0, y: 0, f: "NORTH", Placed: true });
+  });
+
+  test("returns fail result for non-string input with default state", () => {
+    const result = runCommand(null);
+    expect(result.status).toBe("fail");
+    expect(result.command).toBeNull();
+    expect(result.state).toEqual(initialState);
   });
 });

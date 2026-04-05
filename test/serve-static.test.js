@@ -21,6 +21,7 @@ describe("serve-static security checks", () => {
     expect(resolveFilePath(rootDir, "/../package.json")).toBeNull();
     expect(resolveFilePath(rootDir, "/..\\..\\secret.txt")).toBeNull();
     expect(resolveFilePath(rootDir, "/%2e%2e/%2e%2e/secret.txt")).toBeNull();
+    expect(resolveFilePath(rootDir, "/C:/Windows/system32")).toBeNull();
   });
 
   test("blocks malformed and null-byte request paths", () => {
@@ -158,5 +159,33 @@ describe("serve-static integration", () => {
     expect(messages.some((msg) => msg.includes(tempRoot))).toBe(true);
 
     await new Promise((resolve) => cliServer.close(resolve));
+  });
+
+  test("bootstraps using default dist folder when argv path is omitted", async () => {
+    const originalCwd = process.cwd();
+    const tempCwd = fs.mkdtempSync(path.join(os.tmpdir(), "toyrobot-cli-cwd-"));
+    const distDir = path.join(tempCwd, "dist");
+    fs.mkdirSync(distDir, { recursive: true });
+    fs.writeFileSync(path.join(distDir, "index.html"), "<h1>Default Dist</h1>");
+
+    const messages = [];
+
+    try {
+      process.chdir(tempCwd);
+      const cliServer = startServerFromCli(
+        ["node", "serve-static.js"],
+        { PORT: "0" },
+        (msg) => messages.push(msg),
+      );
+      await new Promise((resolve) => cliServer.on("listening", resolve));
+
+      expect(messages.some((msg) => msg.includes("Serving"))).toBe(true);
+      expect(messages.some((msg) => msg.includes(distDir))).toBe(true);
+
+      await new Promise((resolve) => cliServer.close(resolve));
+    } finally {
+      process.chdir(originalCwd);
+      fs.rmSync(tempCwd, { recursive: true, force: true });
+    }
   });
 });
