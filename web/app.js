@@ -39,7 +39,6 @@ const buttonResetState = document.getElementById("button-reset-state");
 let state = { ...initialState };
 let scriptCommands = [];
 let scriptCursor = 0;
-let selectedPresetKey = "A";
 let customPresetCount = 0;
 
 const presetStore = {
@@ -159,11 +158,59 @@ function selectPreset(presetKey) {
     return;
   }
 
-  selectedPresetKey = presetKey;
   scriptInput.value = preset.commands;
   reloadScriptCommands();
   selectedPresetLine.textContent = `Selected preset: ${preset.label}`;
   setStatusBanner("neutral", `Preset loaded: ${preset.label}`);
+}
+
+function getSelectedPresetLabel() {
+  return selectedPresetLine.textContent.replace("Selected preset: ", "").trim();
+}
+
+function runSelectedPresetFromScript() {
+  const commands = parseScript(scriptInput.value);
+
+  if (commands.length === 0) {
+    setStatusBanner("fail", "Command failed: Selected preset has no commands");
+    return;
+  }
+
+  commands.forEach((command) => executeCommand(command));
+  setStatusBanner(
+    "success",
+    `Command success: Ran preset ${getSelectedPresetLabel() || "Script"}`,
+  );
+}
+
+function validateCustomPreset(name, commands) {
+  if (!name) {
+    return "Command failed: Preset name is required";
+  }
+
+  if (name.length > 40) {
+    return "Command failed: Preset name must be 40 characters or fewer";
+  }
+
+  const parsed = parseScript(commands);
+  if (parsed.length === 0) {
+    return "Command failed: Preset commands cannot be empty";
+  }
+
+  if (parsed[0].trim().split(/\s+/)[0] !== "PLACE") {
+    return "Command failed: First preset command must be PLACE";
+  }
+
+  let previewState = { ...initialState };
+  for (const line of parsed) {
+    const result = runCommandWithLog(line, previewState);
+    if (result.command === null) {
+      return `Command failed: Invalid command syntax in preset line "${line}"`;
+    }
+    previewState = result.state;
+  }
+
+  return null;
 }
 
 function attachPresetButtonHandler(button) {
@@ -283,21 +330,15 @@ buttonResetState.addEventListener("click", () => {
 });
 
 runPresetButton.addEventListener("click", () => {
-  runPresetByKey(selectedPresetKey);
+  runSelectedPresetFromScript();
 });
 
 saveCustomPresetButton.addEventListener("click", () => {
   const name = customPresetName.value.trim();
   const commands = customPresetCommands.value;
-  const parsed = parseScript(commands);
-
-  if (!name) {
-    setStatusBanner("fail", "Command failed: Preset name is required");
-    return;
-  }
-
-  if (parsed.length === 0) {
-    setStatusBanner("fail", "Command failed: Preset commands cannot be empty");
+  const validationError = validateCustomPreset(name, commands);
+  if (validationError) {
+    setStatusBanner("fail", validationError);
     return;
   }
 
