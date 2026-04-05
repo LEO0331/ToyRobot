@@ -40,9 +40,11 @@ function resolveFilePath(rootDir, requestUrl = "/") {
   const safePath = path.normalize(normalizedPath);
   const absoluteRoot = path.resolve(rootDir);
   const absolutePath = path.resolve(absoluteRoot, safePath);
+  const hasWindowsDrivePrefix = /^[a-zA-Z]:[\\/]/.test(safePath);
 
   if (
     safePath.startsWith("..") ||
+    hasWindowsDrivePrefix ||
     path.isAbsolute(safePath) ||
     (!absolutePath.startsWith(`${absoluteRoot}${path.sep}`) &&
       absolutePath !== absoluteRoot)
