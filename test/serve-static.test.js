@@ -15,6 +15,7 @@ describe("serve-static security checks", () => {
   test("resolves root path to index.html", () => {
     const resolved = resolveFilePath(rootDir, "/");
     expect(resolved).toBe(path.resolve(rootDir, "index.html"));
+    expect(resolveFilePath(rootDir)).toBe(path.resolve(rootDir, "index.html"));
   });
 
   test("blocks directory traversal attempts", () => {
@@ -77,6 +78,7 @@ describe("serve-static integration", () => {
     fs.writeFileSync(path.join(tempRoot, "index.html"), "<h1>Toy Robot</h1>");
     fs.writeFileSync(path.join(tempRoot, "app.js"), "console.log('ok');");
     fs.writeFileSync(path.join(tempRoot, "blob.bin"), "bin-data");
+    fs.mkdirSync(path.join(tempRoot, "assets"), { recursive: true });
 
     server = createStaticServer(tempRoot);
     await new Promise((resolve) => {
@@ -133,6 +135,12 @@ describe("serve-static integration", () => {
     expect(res.body).toBe("Not Found");
   });
 
+  test("returns 404 for directory paths (not a file)", async () => {
+    const res = await request({ pathname: "/assets" });
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toBe("Not Found");
+  });
+
   test("returns 403 for traversal attempts", async () => {
     const res = await request({ pathname: "/%2e%2e/%2e%2e/secret.txt" });
     expect(res.statusCode).toBe(403);
@@ -161,6 +169,59 @@ describe("serve-static integration", () => {
     await new Promise((resolve) => cliServer.close(resolve));
   });
 
+  test("uses default logger parameter in cli helper", async () => {
+    const cliServer = startServerFromCli(
+      ["node", "serve-static.js", tempRoot],
+      { PORT: "0" },
+    );
+
+    await new Promise((resolve) => cliServer.on("listening", resolve));
+    await new Promise((resolve) => cliServer.close(resolve));
+  });
+
+  test("uses default argv parameter in cli helper", async () => {
+    const originalArgv = process.argv;
+    const originalCwd = process.cwd();
+    const tempCwd = fs.mkdtempSync(path.join(os.tmpdir(), "toyrobot-cli-default-"));
+    const distDir = path.join(tempCwd, "dist");
+    fs.mkdirSync(distDir, { recursive: true });
+    fs.writeFileSync(path.join(distDir, "index.html"), "<h1>Argv Default</h1>");
+
+    try {
+      process.argv = ["node", "serve-static.js"];
+      process.chdir(tempCwd);
+
+      const cliServer = startServerFromCli(undefined, { PORT: "0" }, () => {});
+      await new Promise((resolve) => cliServer.on("listening", resolve));
+      await new Promise((resolve) => cliServer.close(resolve));
+    } finally {
+      process.chdir(originalCwd);
+      process.argv = originalArgv;
+      fs.rmSync(tempCwd, { recursive: true, force: true });
+    }
+  });
+
+  test("uses default env parameter in cli helper", async () => {
+    const originalPort = process.env.PORT;
+    process.env.PORT = "0";
+    try {
+      const cliServer = startServerFromCli(
+        ["node", "serve-static.js", tempRoot],
+        undefined,
+        () => {},
+      );
+
+      await new Promise((resolve) => cliServer.on("listening", resolve));
+      await new Promise((resolve) => cliServer.close(resolve));
+    } finally {
+      if (originalPort === undefined) {
+        delete process.env.PORT;
+      } else {
+        process.env.PORT = originalPort;
+      }
+    }
+  });
+
   test("bootstraps using default dist folder when argv path is omitted", async () => {
     const originalCwd = process.cwd();
     const tempCwd = fs.mkdtempSync(path.join(os.tmpdir(), "toyrobot-cli-cwd-"));
@@ -186,6 +247,24 @@ describe("serve-static integration", () => {
     } finally {
       process.chdir(originalCwd);
       fs.rmSync(tempCwd, { recursive: true, force: true });
+    }
+  });
+
+  test("falls back to '/' when request url is missing", async () => {
+    const emptyRoot = fs.mkdtempSync(path.join(os.tmpdir(), "toyrobot-url-fallback-"));
+    const localServer = createStaticServer(emptyRoot);
+
+    const writeHead = jest.fn();
+    const end = jest.fn();
+    const mockResponse = { writeHead, end };
+
+    try {
+      localServer.emit("request", { method: "GET" }, mockResponse);
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      expect(writeHead).toHaveBeenCalled();
+      expect(end).toHaveBeenCalledWith("Not Found");
+    } finally {
+      fs.rmSync(emptyRoot, { recursive: true, force: true });
     }
   });
 });
