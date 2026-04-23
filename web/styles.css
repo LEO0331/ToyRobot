@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=DM+Sans:wght@400;500;700&display=swap");
-
 :root {
   --bg: #08122e;
   --bg-alt: #0f214f;
@@ -75,6 +73,8 @@ body::after {
   transform: translateY(18px) scale(0.98);
   opacity: 0;
   animation: reveal-panel 620ms cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+  content-visibility: auto;
+  contain-intrinsic-size: 420px;
 }
 
 .panel:nth-child(1) {
@@ -338,6 +338,18 @@ button:active {
   transform: translateY(-2px);
 }
 
+.cell:has(.robot) {
+  background:
+    linear-gradient(170deg, #fff, #eef6ff),
+    repeating-linear-gradient(
+      45deg,
+      rgba(24, 56, 120, 0.03),
+      rgba(24, 56, 120, 0.03) 5px,
+      transparent 5px,
+      transparent 10px
+    );
+}
+
 .coord {
   font-size: 0.7rem;
   color: #5e739c;
@@ -441,5 +453,20 @@ button:active {
 
   .action-pad {
     grid-template-columns: repeat(2, minmax(90px, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .robot,
+  .cell,
+  button,
+  .latest-status,
+  input,
+  textarea,
+  select {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
   }
 }

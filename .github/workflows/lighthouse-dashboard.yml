@@ -1,0 +1,54 @@
+name: Lighthouse Dashboard
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static site
+        run: npm run web:build
+
+      - name: Run Lighthouse CI
+        id: lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./.lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Publish dashboard links
+        env:
+          LINKS_JSON: ${{ steps.lighthouse.outputs.links }}
+        run: |
+          node -e '
+          const links = JSON.parse(process.env.LINKS_JSON || "[]");
+          const lines = ["## Lighthouse Temporary Dashboard", ""];
+          if (links.length === 0) {
+            lines.push("No public links were produced by Lighthouse CI.");
+          } else {
+            for (const link of links) {
+              lines.push(`- ${link}`);
+            }
+          }
+          require("node:fs").appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join("\n")}\n`);
+          '

@@ -58,7 +58,12 @@ function resolveFilePath(rootDir, requestUrl = "/") {
 function sendFile(filePath, requestMethod, response) {
   const ext = path.extname(filePath).toLowerCase();
   const contentType = mimeType[ext] || "application/octet-stream";
-  setHeaders(response, 200, { "Content-Type": contentType });
+  const cacheControl =
+    ext === ".html" ? "no-cache" : "public, max-age=31536000, immutable";
+  setHeaders(response, 200, {
+    "Content-Type": contentType,
+    "Cache-Control": cacheControl,
+  });
 
   if (requestMethod === "HEAD") {
     response.end();
